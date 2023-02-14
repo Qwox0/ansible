@@ -1,0 +1,12 @@
+# vim: set filetype=yaml.ansible :/
+- name: Setup Rust
+  tags: rust
+  block:
+    - name: Linking .cargo and .rustup
+      ansible.builtin.file:
+        src: "/usr/share/rust/{{ item }}"
+        dest: "{{ lookup('env', 'HOME') }}/{{ item }}"
+        state: link
+      loop:
+        - .cargo
+        - .rustup
