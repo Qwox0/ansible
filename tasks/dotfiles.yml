@@ -19,29 +19,44 @@
 
     - name: Linking dotfiles
       vars:
-        dest: "{{ lookup('env', 'HOME') }}/.config/{{ item.path | basename }}"
-      ansible.builtin.file:
-        dest: "{{ dest }}"
-        src: "{{ item.path }}"
-        state: link
-      with_items: "{{ dotfiles_list.files }}"
-      loop_control:
-        label: "{{ dest }} -> {{ item.path }}"
-
-    - name: Linking bash config
-      vars:
-        dest: "{{ lookup('env', 'HOME') }}/{{ item }}"
-        src: "{{ dotfiles }}/{{ item }}"
+        is_valid_line: "{{ (item | trim)[:1] != '#' }}"
+        dest: "{{ lookup('env', 'HOME') }}/{{ item.split(';')[1] | trim }}"
+        src: "{{ dotfiles }}/{{ item.split(';')[0] | trim }}"
       ansible.builtin.file:
         dest: "{{ dest }}"
         src: "{{ src }}"
         state: link
         force: true # replace existing files!
-      loop:
-        - .bashrc
-        #- .bash_aliases
+      loop: "{{ lookup('ansible.builtin.file', '{{ dotfiles }}/TARGETS').splitlines() }}"
+      when: is_valid_line
       loop_control:
         label: "{{ dest }} -> {{ src }}"
+
+    # - name: Linking dotfiles
+    #   vars:
+    #     dest: "{{ lookup('env', 'HOME') }}/.config/{{ item.path | basename }}"
+    #   ansible.builtin.file:
+    #     dest: "{{ dest }}"
+    #     src: "{{ item.path }}"
+    #     state: link
+    #   with_items: "{{ dotfiles_list.files }}"
+    #   loop_control:
+    #     label: "{{ dest }} -> {{ item.path }}"
+
+    # - name: Linking bash config
+    #   vars:
+    #     dest: "{{ lookup('env', 'HOME') }}/{{ item }}"
+    #     src: "{{ dotfiles }}/{{ item }}"
+    #   ansible.builtin.file:
+    #     dest: "{{ dest }}"
+    #     src: "{{ src }}"
+    #     state: link
+    #     force: true # replace existing files!
+    #   loop:
+    #     - .bashrc
+    #     # - .bash_aliases
+    #   loop_control:
+    #     label: "{{ dest }} -> {{ src }}"
 
   # Read target from TARGET file
 
