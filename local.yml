@@ -17,27 +17,96 @@
         - install
         - core
   tasks:
+    ########
+    # Core #
     - name: Core
-      ansible.builtin.import_tasks: tasks/core.yml
-    - name: Git
-      ansible.builtin.import_tasks: tasks/git.yml
-    - name: Neovim
-      ansible.builtin.import_tasks: tasks/neovim.yml
+      block:
+        - name: Install basic Utils (curl)
+          become: true
+          ansible.builtin.apt:
+            name: ["curl", "git"]
+          tags:
+            - dotfiles
+            - neovim
+            - rust
+
+        - name: Install System Packages 1 (build-essential, cmake, pkg-config, pthread)
+          become: true
+          ansible.builtin.apt:
+            name: ["build-essential", "cmake", "pkg-config", "libpthread-stubs0-dev"]
+          tags:
+            - neovim
+
+        - name: Install System Packages 2 (lua, unzip, libtool, libtool-bin, gettext)
+          become: true
+          ansible.builtin.apt:
+            name: ["lua5.1", "unzip", "libtool", "libtool-bin", "gettext"]
+          tags:
+            - neovim
+
+#  nvim build requirements: sudo ansible.builtin.apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
+
+# - name: Install System Packages 3 (the rest)
+#   become: true
+#   ansible.builtin.apt:
+#     name: [ "compton", "curl", "htop", "golang", "lsof", "i3", "ccache", "ninja-build", "python3-pip", "dconf-editor", "nvidia-settings", "pavucontrol", "moreutils", "clangd", "ubuntu-mate-desktop" ]
+#   tags:
+#     - wm
+#
+# - name: Install Clang
+#   become: true
+#   ansible.builtin.apt:
+#     name: ["clang", "clang-11", "clang-12", "clangd", "clangd-10", "clangd-11", "clangd-12"]
+
+    #############
+    # Languages #
     - name: Rust
       ansible.builtin.import_tasks: tasks/rust.yml
-    - name: Qemu
-      ansible.builtin.import_tasks: tasks/qemu.yml
-    - name: Brave
-      ansible.builtin.import_tasks: tasks/brave.yml
+      tags:
+        - rust
+        - terminal
+
+    - name: Node
+      ansible.builtin.import_tasks: tasks/node.yml
+      tags:
+        - node
+        - neovim
+
+    ###########
+    # Configs #
+    - name: Git Config
+      ansible.builtin.import_tasks: tasks/git.yml
+
     - name: Dotfiles
       ansible.builtin.import_tasks: tasks/dotfiles.yml
+      tags:
+        - dotfiles
+        - neovim
+        - bash
+        - terminal
+        - awesome
 
-    # - include: tasks/ssh.yml
-    # - include: tasks/node-setup.yml
-    # - include: tasks/npm-packages.yml
-    # - include: tasks/zsh-setup.yml
-    # - include: tasks/slack-setup.yml
-    # - include: tasks/personal-projects.yml
-    # - include: tasks/debugger.yml
-    # - include: tasks/productivity-tools.yml
-    # - include: tasks/lsp.yml
+    ################
+    # Applications #
+    - name: Neovim
+      ansible.builtin.import_tasks: tasks/neovim.yml
+      tags: neovim
+
+    - name: Terminal
+      ansible.builtin.import_tasks: tasks/terminal.yml
+      tags: terminal
+
+    - name: Qemu
+      ansible.builtin.import_tasks: tasks/qemu.yml
+      tags: qemu
+
+    - name: Brave
+      ansible.builtin.import_tasks: tasks/brave.yml
+      tags: brave
+
+
+    - name: Test local
+      vars:
+        test: Hello World
+      ansible.builtin.import_tasks: tasks/test.yml
+      tags: test

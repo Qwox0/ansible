@@ -1,21 +1,18 @@
 # vim: set filetype=yaml.ansible :/
-- name: Setup Qemu
-  tags: qemu
-  block:
-    - name: Install Qemu and Virt-manager
-      ansible.builtin.apt:
-        name:
-          - qemu
-          - virt-manager
-          - virt-viewer
-          - dnsmasq
-          - vde2
-          - bridge-utils
-          - netcat-openbsd
-          - libguestfs-tools
+- name: Install Qemu and Virt-manager
+  ansible.builtin.apt:
+    name:
+      - qemu
+      - virt-manager
+      - virt-viewer
+      - dnsmasq
+      - vde2
+      - bridge-utils
+      - netcat-openbsd
+      - libguestfs-tools
 
-    - name: Add User to libvirt group
-      ansible.builtin.user:
-        name: "{{ lookup('env', 'USER') }}"
-        groups: libvirt
-        append: true
+- name: Add User to libvirt group
+  ansible.builtin.user:
+    name: "{{ lookup('env', 'USER') }}"
+    groups: libvirt
+    append: true

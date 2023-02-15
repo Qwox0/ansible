@@ -1,12 +1,17 @@
 # vim: set filetype=yaml.ansible :/
-- name: Setup Rust
-  tags: rust
-  block:
-    - name: Linking .cargo and .rustup
-      ansible.builtin.file:
-        src: "/usr/share/rust/{{ item }}"
-        dest: "{{ lookup('env', 'HOME') }}/{{ item }}"
-        state: link
-      loop:
-        - .cargo
-        - .rustup
+- name: Linking .cargo and .rustup
+  vars:
+    src: "/usr/share/rust/{{ item }}"
+    dest: "{{ lookup('env', 'HOME') }}/{{ item }}"
+  ansible.builtin.file:
+    src: "{{ src }}"
+    dest: "{{ dest }}"
+    state: link
+  loop:
+    - .cargo
+    - .rustup
+  loop_control:
+    label: "{{ dest }} -> {{ src }}"
+
+- name: Install/Update Rust
+  ansible.builtin.shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly --no-modify-path -y

@@ -1,0 +1,4 @@
+# vim: set filetype=yaml.ansible :/
+- name: Test 1
+  ansible.builtin.debug:
+    msg: "{{ test }}"
