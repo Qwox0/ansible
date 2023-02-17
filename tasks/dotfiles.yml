@@ -5,17 +5,11 @@
   block:
     - name: Cloning .dotfiles
       ansible.builtin.git:
-        repo: 'https://github.com/Qwox0/.dotfiles'
+        repo: "https://github.com/Qwox0/.dotfiles"
         dest: "{{ dotfiles }}"
         recursive: true
         update: true
       ignore_errors: true # skip this step on error
-
-    - name: Finding Dotfile Directories
-      ansible.builtin.find:
-        paths: "{{ dotfiles }}"
-        file_type: "directory"
-      register: dotfiles_list
 
     - name: Linking dotfiles
       vars:
@@ -31,6 +25,12 @@
       when: is_valid_line
       loop_control:
         label: "{{ dest }} -> {{ src }}"
+
+    # - name: Finding Dotfile Directories
+    #   ansible.builtin.find:
+    #     paths: "{{ dotfiles }}"
+    #     file_type: "directory"
+    #   register: dotfiles_list
 
     # - name: Linking dotfiles
     #   vars:

@@ -1,0 +1,12 @@
+# vim: set filetype=yaml.ansible :/
+- name: Installing awesome dependencies
+  ansible.builtin.apt:
+    name: awesome
+    state: build-dep
+
+- name: Cloning awesome
+  ansible.builtin.git:
+    repo: "https://github.com/awesomeWM/awesome"
+    dest: "{{ bin }}/awesome"
+    update: true
+    force: true
