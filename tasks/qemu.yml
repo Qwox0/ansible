@@ -1,5 +1,6 @@
 # vim: set filetype=yaml.ansible :/
-- name: Install Qemu and Virt-manager
+- name: Installing Qemu and Virt-Manager
+  become: true
   ansible.builtin.apt:
     name:
       - qemu

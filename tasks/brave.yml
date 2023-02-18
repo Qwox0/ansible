@@ -1,20 +1,15 @@
 # vim: set filetype=yaml.ansible :/
-- name: Required libraries for brave
-  become: true
-  apt:
-    name: ["curl", "apt-transport-https"]
-
-- name: Brave Browser archive-keyring.gpg download
-  get_url:
+- name: Downloading Brave Browser Keyring
+  ansible.builtin.get_url:
     url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
     dest: /usr/share/keyrings/brave-browser-archive-keyring.gpg
 
-- name: Brave Browser PPA setting
+- name: Adding Brave Browser PPA
   become: true
-  shell: echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser-release.list
+  ansible.builtin.shell: echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser-release.list
 
-- name: Brave Browser apt installation
+- name: Installing Brave Browser
   become: true
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     name: brave-browser

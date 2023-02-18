@@ -2,7 +2,7 @@
 - name: Linking .cargo and .rustup
   vars:
     src: "/usr/share/rust/{{ item }}"
-    dest: "{{ lookup('env', 'HOME') }}/{{ item }}"
+    dest: "{{ home }}/{{ item }}"
   ansible.builtin.file:
     src: "{{ src }}"
     dest: "{{ dest }}"
@@ -13,5 +13,5 @@
   loop_control:
     label: "{{ dest }} -> {{ src }}"
 
-- name: Install/Update Rust
+- name: Installing or Updating Rust
   ansible.builtin.shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly --no-modify-path -y

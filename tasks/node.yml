@@ -1,8 +1,8 @@
 # vim: set filetype=yaml.ansible :/
-- name: Install nodejs and npm
+- name: Installing Node.js
   become: true
   apt:
-    name: ["nodejs", "npm"]
+    name: nodejs
 
 # - name: npmjs prefix
 #   shell: mkdir -p ~/.local/.npm-global

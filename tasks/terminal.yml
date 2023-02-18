@@ -1,6 +1,6 @@
 # vim: set filetype=yaml.ansible :/
-- name: Install Starship Shell
+- name: Installing Starship Shell
   ansible.builtin.command: cargo install starship --locked
 
-- name: Install Alacritty Terminal
+- name: Installing Alacritty Terminal
   ansible.builtin.command: cargo install alacritty

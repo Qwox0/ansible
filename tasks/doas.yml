@@ -1,0 +1,9 @@
+# vim: set filetype=yaml.ansible :/
+- name: Installing Doas
+  become: true
+  ansible.builtin.apt:
+    name: doas
+
+- name: Creating /etc/doas.conf
+  become: true
+  ansible.builtin.shell: echo "permit :sudo" | tee /etc/doas.conf # "permit :wheel"

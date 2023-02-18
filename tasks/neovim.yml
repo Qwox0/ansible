@@ -1,32 +1,36 @@
 # vim: set filetype=yaml.ansible :/
-- name: Get Packer
-  ansible.builtin.git:
-    repo: 'https://github.com/wbthomason/packer.nvim'
-    dest: "{{ lookup('env', 'HOME') }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
-
-- name: Install prebuilt neovim
+- name: Installing Neovim build dependencies
   become: true
   ansible.builtin.apt:
-    deb: "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.deb"
+    name: neovim
+    state: build-dep
 
-# - name: "Remove neovim"
-#   tags: "neovim-remove"
-#   block:
-#     - name: Remove neovim
-#       #  shell: rm -rf {{ bin }}/neovim
-#       ansible.builtin.file:
-#         path: "{{ bin }}/neovim"
-#         state: absent
+- name: Cloning Neovim
+  ansible.builtin.git:
+    repo: "https://github.com/neovim/neovim"
+    dest: "{{ bin }}/neovim"
+    update: true
+    force: true
+
+- name: Removing old build directory
+  ansible.builtin.file:
+    path: "{{ bin }}/neovim/build"
+    state: absent
+
+- name: Building Neovim
+  ansible.builtin.command: make
+  args:
+    chdir: "{{ bin }}/neovim"
+  environment:
+    CMAKE_BUILD_TYPE: RelWithDebInfo
+
+- name: Creating and Installing Neovim .deb package
+  become: true
+  ansible.builtin.command: "checkinstall --default --pakdir={{ bin }}/neovim/build"
+  args:
+    chdir: "{{ bin }}/neovim"
 
 
-# - name: Clone Neovim
-#   ansible.builtin.git:
-#     repo: 'https://github.com/neovim/neovim.git'
-#     update: true
-#     dest: "{{ bin }}/neovim"
-#   tags:
-#     - neovim
-#
 # - name: Build neovim
 #   shell: "cd {{ bin }}/neovim && make -j 20"
 #   tags:

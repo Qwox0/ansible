@@ -1,17 +1,17 @@
 # vim: set filetype=yaml.ansible :/
-- name: Git personal setup email
+- name: Setting personal Git email
   git_config:
     name: user.email
     scope: global
     value: "qwox@qwox.com"
 
-- name: Git personal setup name
+- name: Setting personal Git username
   git_config:
     name: user.name
     scope: global
     value: "Qwox"
 
-- name: Git setup store
+- name: Enabling Git credential store
   git_config:
     name: credential.helper
     scope: global
