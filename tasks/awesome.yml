@@ -1,5 +1,6 @@
 # vim: set filetype=yaml.ansible :/
 - name: Installing awesome dependencies
+  become: true
   ansible.builtin.apt:
     name: awesome
     state: build-dep
@@ -10,3 +11,22 @@
     dest: "{{ bin }}/awesome"
     update: true
     force: true
+
+- name: Building .deb package
+  ansible.builtin.command: make package
+  args:
+    chdir: "{{ bin }}/awesome"
+
+- name: Find build .deb package
+  ansible.builtin.find:
+    paths: "{{ bin }}/awesome/build"
+    patterns: "*.deb"
+  register: deb_packages
+
+- name: Installing build .deb package
+  become: true
+  ansible.builtin.apt:
+    deb: "{{ deb_packages.files[0].path }}"
+  # loop: "{{ deb_packages.files | flatten(levels=1) }}"
+  # loop_control:
+  #   label: "{{ item.path }}"
