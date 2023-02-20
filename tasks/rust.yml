@@ -1,5 +1,6 @@
 # vim: set filetype=yaml.ansible :/
 - name: Creating extern .cargo and .rustup direcories
+  become: true
   vars:
     dest: "/usr/share/rust/{{ item }}"
   ansible.builtin.file:
