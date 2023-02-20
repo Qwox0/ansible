@@ -6,7 +6,9 @@
 - name: Installing Alacritty font dependencies
   become: true
   ansible.builtin.apt:
-    name: libfontconfig1-dev libfontconfig1
+    name:
+      - libfontconfig1-dev
+      - libfontconfig1
 
 - name: Installing Alacritty Terminal
   ansible.builtin.command: cargo install alacritty
