@@ -11,24 +11,28 @@
     dest: "{{ bin }}/neovim"
     update: true
     force: true
+  register: git_result
 
-- name: Removing old build directory
-  ansible.builtin.file:
-    path: "{{ bin }}/neovim/build"
-    state: absent
+- name: Neovim Build Process
+  when: git_result.changed
+  block:
+    - name: Removing old build directory
+      ansible.builtin.file:
+        path: "{{ bin }}/neovim/build"
+        state: absent
 
-- name: Building Neovim
-  ansible.builtin.command: make
-  args:
-    chdir: "{{ bin }}/neovim"
-  environment:
-    CMAKE_BUILD_TYPE: RelWithDebInfo
+    - name: Building Neovim
+      ansible.builtin.command: make
+      args:
+        chdir: "{{ bin }}/neovim"
+      environment:
+        CMAKE_BUILD_TYPE: RelWithDebInfo
 
-- name: Creating and Installing Neovim .deb package
-  become: true
-  ansible.builtin.command: "checkinstall --default --pakdir={{ bin }}/neovim/build"
-  args:
-    chdir: "{{ bin }}/neovim"
+    - name: Creating and Installing Neovim .deb package
+      become: true
+      ansible.builtin.command: "checkinstall --default --pakdir={{ bin }}/neovim/build"
+      args:
+        chdir: "{{ bin }}/neovim"
 
 
 # - name: Build neovim

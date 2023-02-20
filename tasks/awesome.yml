@@ -11,27 +11,31 @@
     dest: "{{ bin }}/awesome"
     update: true
     force: true
+  register: git_result
 
-- name: Removing old build directory
-  ansible.builtin.file:
-    path: "{{ bin }}/awesome/build"
-    state: absent
+- name: Neovim Build Process
+  when: git_result.changed
+  block:
+    - name: Removing old build directory
+      ansible.builtin.file:
+        path: "{{ bin }}/awesome/build"
+        state: absent
 
-- name: Building .deb package
-  ansible.builtin.command: make package
-  args:
-    chdir: "{{ bin }}/awesome"
+    - name: Building .deb package
+      ansible.builtin.command: make package
+      args:
+        chdir: "{{ bin }}/awesome"
 
-- name: Searching .deb package
-  ansible.builtin.find:
-    paths: "{{ bin }}/awesome/build"
-    patterns: "*.deb"
-  register: deb_packages
+    - name: Searching .deb package
+      ansible.builtin.find:
+        paths: "{{ bin }}/awesome/build"
+        patterns: "*.deb"
+      register: deb_packages
 
-- name: Installing .deb package
-  become: true
-  ansible.builtin.apt:
-    deb: "{{ deb_packages.files[0].path }}"
-  # loop: "{{ deb_packages.files | flatten(levels=1) }}"
-  # loop_control:
-  #   label: "{{ item.path }}"
+    - name: Installing .deb package
+      become: true
+      ansible.builtin.apt:
+        deb: "{{ deb_packages.files[0].path }}"
+      # loop: "{{ deb_packages.files | flatten(levels=1) }}"
+      # loop_control:
+      #   label: "{{ item.path }}"
