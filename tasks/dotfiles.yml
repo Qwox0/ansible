@@ -15,16 +15,16 @@
       vars:
         is_valid_line: "{{ (item | trim)[:1] != '#' }}"
         dest: "{{ home }}/{{ item.split(';')[1] | trim }}"
-        src: "{{ item.split(';')[0] | trim | realpath }}"
+        src: "{{ dotfiles }}/{{ item.split(';')[0] | trim }}"
       ansible.builtin.file:
         dest: "{{ dest }}"
-        src: "{{ src }}"
+        src: "{{ src | realpath }}"
         state: link
         force: true # replace existing files!
       loop: "{{ lookup('ansible.builtin.file', '{{ dotfiles }}/TARGETS').splitlines() }}"
       when: is_valid_line
       loop_control:
-        label: "{{ dest }} -> {{ src }}"
+        label: "{{ dest }} -> {{ src | realpath }}"
 
   # stow
   # - name: Installing stow
