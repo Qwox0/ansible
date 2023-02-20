@@ -4,3 +4,5 @@
 
 - name: Installing Alacritty Terminal
   ansible.builtin.command: cargo install alacritty
+  environment:
+    PKG_CONFIG_PATH:"/usr/lib/x86_64-linux-gnu/pkgconfig"
