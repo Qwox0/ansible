@@ -2,6 +2,7 @@
 - name: Local
   hosts: localhost
   vars:
+    user: "{{ lookup('env', 'USER') }}"
     home: "{{ lookup('env', 'HOME') }}"
     bin: "{{ home }}/bin"
   pre_tasks:

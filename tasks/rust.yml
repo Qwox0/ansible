@@ -1,11 +1,25 @@
 # vim: set filetype=yaml.ansible :/
+- name: Creating extern .cargo and .rustup direcories
+  vars:
+    dest: "/usr/share/rust/{{ item }}"
+  ansible.builtin.file:
+    dest: "{{ dest }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  loop:
+    - .cargo
+    - .rustup
+  loop_control:
+    label: "{{ dest }}/"
+
 - name: Linking .cargo and .rustup
   vars:
-    src: "/usr/share/rust/{{ item }}"
     dest: "{{ home }}/{{ item }}"
+    src: "/usr/share/rust/{{ item }}"
   ansible.builtin.file:
-    src: "{{ src }}"
     dest: "{{ dest }}"
+    src: "{{ src }}"
     state: link
   loop:
     - .cargo
