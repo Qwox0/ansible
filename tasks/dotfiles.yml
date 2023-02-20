@@ -15,7 +15,7 @@
       vars:
         is_valid_line: "{{ (item | trim)[:1] != '#' }}"
         dest: "{{ home }}/{{ item.split(';')[1] | trim }}"
-        src: "{{ dotfiles }}/{{ item.split(';')[0] | trim }}"
+        src: "{{ item.split(';')[0] | trim | realpath }}"
       ansible.builtin.file:
         dest: "{{ dest }}"
         src: "{{ src }}"
@@ -39,4 +39,3 @@
   #   tags:
   #     - dotfiles
   #     - stow
-
