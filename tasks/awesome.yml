@@ -5,6 +5,12 @@
     name: awesome
     state: build-dep
 
+- name: Installing more Awesome build dependencies (libxcb-xfixes0-dev)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - libxcb-xfixes0-dev
+
 - name: Cloning Awesome
   ansible.builtin.git:
     repo: "https://github.com/awesomeWM/awesome"
@@ -13,7 +19,7 @@
     force: true
   register: git_result
 
-- name: Neovim Build Process
+- name: Awesome Build Process
   when: git_result.changed
   block:
     - name: Removing old build directory
