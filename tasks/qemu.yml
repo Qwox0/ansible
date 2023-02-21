@@ -13,6 +13,7 @@
       - libguestfs-tools
 
 - name: Add User to libvirt group
+  become: true
   ansible.builtin.user:
     name: "{{ user }}"
     groups: libvirt
