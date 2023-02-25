@@ -1,35 +1,4 @@
 # vim: set filetype=yaml.ansible :/
-- name: Creating extern .cargo and .rustup direcories
-  become: true
-  vars:
-    dest: "/usr/share/rust/{{ item }}"
-  ansible.builtin.file:
-    dest: "{{ dest }}"
-    state: directory
-    owner: "{{ user }}"
-    group: "{{ user }}"
-  loop:
-    - .cargo
-    - .rustup
-    - .cache/sccache
-  loop_control:
-    label: "{{ dest }}/"
-
-- name: Linking .cargo and .rustup
-  vars:
-    dest: "{{ home }}/{{ item }}"
-    src: "/usr/share/rust/{{ item }}"
-  ansible.builtin.file:
-    dest: "{{ dest }}"
-    src: "{{ src }}"
-    state: link
-  loop:
-    - .cargo
-    - .rustup
-    - .cache/sccache
-  loop_control:
-    label: "{{ dest }} -> {{ src }}"
-
 - name: Installing or Updating Rust
   ansible.builtin.shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly --no-modify-path -y
 

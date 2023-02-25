@@ -23,7 +23,9 @@
         - name: Install basic Utils (curl, git)
           become: true
           ansible.builtin.apt:
-            name: ["curl", "git"]
+            name:
+              - curl
+              - git
           tags:
             - dotfiles
             - neovim
@@ -43,6 +45,7 @@
             - doas
             - bash
             - dotfiles
+
         - name: Install Openssl (dev)
           become: true
           ansible.builtin.apt:
@@ -53,10 +56,16 @@
     #############
     # Languages #
     - name: Rust
-      ansible.builtin.import_tasks: tasks/rust.yml
       tags:
         - rust
         - terminal
+      block:
+        - name: Rust Environment
+          ansible.builtin.import_tasks: tasks/rust-env.yml
+          tags: dotfiles
+
+        - name: Rust-lang
+          ansible.builtin.import_tasks: tasks/rust.yml
 
     - name: Node.js
       ansible.builtin.import_tasks: tasks/node.yml
