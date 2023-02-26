@@ -38,7 +38,7 @@
     - name: Removing existing config directories
       vars:
         is_valid_line: "{{ (item | trim)[:1] != '#' }}"
-        dest: "{{ home }}/{{ item.split(';')[1] | trim }}"
+        dest: "{{ item.split(';')[1] | trim | regex_replace('~', home) }}"
         changed: "{{ out.rc | default(1) == 0 }}"
       ansible.builtin.shell: "[ -d {{ dest }} -a ! -L {{ dest }} ] && rm -r {{ dest }}"
       register: out
@@ -52,7 +52,7 @@
     - name: Linking .dotfiles
       vars:
         is_valid_line: "{{ (item | trim)[:1] != '#' }}"
-        dest: "{{ home }}/{{ item.split(';')[1] | trim }}"
+        dest: "{{ item.split(';')[1] | trim | regex_replace('~', home) }}"
         src: "{{ dotfiles }}/{{ item.split(';')[0] | trim }}"
       ansible.builtin.file:
         dest: "{{ dest }}"
