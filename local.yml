@@ -90,6 +90,13 @@
 
     ################
     # Applications #
+    - name: Rust tools
+      ansible.builtin.import_tasks: tasks/rust-tools.yml
+      tags:
+        - rust
+        - terminal
+
+
     - name: Neovim
       ansible.builtin.import_tasks: tasks/neovim.yml
       tags: neovim

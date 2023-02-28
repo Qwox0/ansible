@@ -1,0 +1,4 @@
+# vim: set filetype=yaml.ansible :/
+- name: Install Sccache
+  ansible.builtin.command: cargo install sccache
+
