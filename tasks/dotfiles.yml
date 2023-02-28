@@ -11,58 +11,39 @@
         update: true
       ignore_errors: true # skip this step on error
 
-    # - name: Finding existing config directories
-    #   vars:
-    #     is_valid_line: "{{ (item | trim)[:1] != '#' }}"
-    #     dest: "{{ home }}/{{ item.split(';')[1] | trim }}"
-    #   ansible.builtin.stat:
-    #     path: "{{ dest }}"
-    #   loop: "{{ lookup('ansible.builtin.file', '{{ dotfiles }}/TARGETS').splitlines() }}"
-    #   when: is_valid_line
-    #   loop_control:
-    #     label: "is \"{{ dest }}\" a directory?"
-    #   register: existing_dest
-
-    # - name: Removing existing config directories
-    #   vars:
-    #     path: "{{ item.stat.path | default(item.item) }}"
-    #     is_dir: "{{ item.stat.isdir | default(false) }}"
-    #   ansible.builtin.file:
-    #     path: "{{ path }}"
-    #     state: absent
-    #   loop: "{{ existing_dest.results }}"
-    #   when: item is succeeded and is_dir
-    #   loop_control:
-    #     label: "remove {{ path }}/"
-
-    - name: Removing existing config directories
+    - name: "Preparing to link .dotfiles"
       vars:
         is_valid_line: "{{ (item | trim)[:1] != '#' }}"
         dest: "{{ item.split(';')[1] | trim | regex_replace('~', home) }}"
-        changed: "{{ out.rc | default(1) == 0 }}"
-      ansible.builtin.shell: "[ -d {{ dest }} -a ! -L {{ dest }} ] && rm -r {{ dest }}"
+        _src: "{{ dotfiles }}/{{ item.split(';')[0] | trim }}"
+        src: "{{ _src | realpath }}"
+      ansible.builtin.shell: |
+        [ -d {{ dest }} -a ! -L {{ dest }} ] && rm -r {{ dest }} && echo "changed";
+        [ ! -e {{ dest | dirname }} ] && echo "changed";
+        mkdir -p {{ dest | dirname }};
       register: out
-      changed_when: changed
-      failed_when: "out.stderr != ''"
+      changed_when: "out.stdout | default('') != ''"
+      failed_when: "out.stderr | default('') != ''"
       loop: "{{ lookup('ansible.builtin.file', '{{ dotfiles }}/TARGETS').splitlines() }}"
       when: is_valid_line
       loop_control:
-        label: "{{ changed | ternary('remove directory: ' + dest, dest) }}"
+        label: "{{ dest }}"
 
     - name: Linking .dotfiles
       vars:
         is_valid_line: "{{ (item | trim)[:1] != '#' }}"
         dest: "{{ item.split(';')[1] | trim | regex_replace('~', home) }}"
-        src: "{{ dotfiles }}/{{ item.split(';')[0] | trim }}"
+        _src: "{{ dotfiles }}/{{ item.split(';')[0] | trim }}"
+        src: "{{ _src | realpath }}"
       ansible.builtin.file:
         dest: "{{ dest }}"
-        src: "{{ src | realpath }}"
+        src: "{{ src }}"
         state: link
         force: true # replace existing files!
       loop: "{{ lookup('ansible.builtin.file', '{{ dotfiles }}/TARGETS').splitlines() }}"
       when: is_valid_line
       loop_control:
-        label: "{{ dest }} -> {{ src | realpath }}"
+        label: "{{ dest }} -> {{ src }}"
 
   # stow
   # - name: Installing stow
