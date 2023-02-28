@@ -96,7 +96,6 @@
         - rust
         - terminal
 
-
     - name: Neovim
       ansible.builtin.import_tasks: tasks/neovim.yml
       tags: neovim

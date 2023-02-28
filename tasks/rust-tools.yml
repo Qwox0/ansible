@@ -1,4 +1,8 @@
 # vim: set filetype=yaml.ansible :/
-- name: Install Sccache
+- name: Install sccache
   ansible.builtin.command: cargo install sccache
+  environment:
+    RUSTC_WRAPPER: ""
 
+- name: Install mprocs
+  ansible.builtin.command: cargo install mprocs
