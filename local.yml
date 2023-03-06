@@ -87,6 +87,7 @@
         - neovim
         - bash
         - terminal
+        - tmux
         - awesome
 
     ################
@@ -104,6 +105,10 @@
     - name: Terminal
       ansible.builtin.import_tasks: tasks/terminal.yml
       tags: terminal
+
+    - name: Tmux
+      ansible.builtin.import_tasks: tasks/tmux.yml
+      tags: tmux
 
     - name: AwesomeWM
       ansible.builtin.import_tasks: tasks/awesome.yml

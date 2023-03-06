@@ -1,0 +1,5 @@
+# vim: set filetype=yaml.ansible :/
+- name: Installing tmux
+  become: true
+  ansible.builtin.apt:
+    name: tmux
