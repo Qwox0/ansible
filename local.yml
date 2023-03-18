@@ -20,13 +20,14 @@
     # Core #
     - name: Core
       block:
-        - name: Install basic Utils (curl, git, unzip)
+        - name: Install basic Utils (curl, git, unzip, fzf)
           become: true
           ansible.builtin.apt:
             name:
               - curl
               - git
               - unzip
+              - fzf
           tags:
             - dotfiles
             - neovim
