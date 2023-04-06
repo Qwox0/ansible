@@ -41,12 +41,12 @@
           tags:
             - neovim
 
-        - name: Install Doas
-          ansible.builtin.import_tasks: tasks/doas.yml
-          tags:
-            - doas
-            - bash
-            - dotfiles
+        # - name: Install Doas
+        #   ansible.builtin.import_tasks: tasks/doas.yml
+        #   tags:
+        #     - doas
+        #     - bash
+        #     - dotfiles
 
         - name: Install Openssl (dev)
           become: true
