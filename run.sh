@@ -20,6 +20,7 @@ shift "$(($OPTIND -1))"
 tag="$1"
 if [ -z "$tag" ]; then
     echo "please provide tag!"
+    ansible-playbook local.yml --list-tags
     exit 2
 fi
 
