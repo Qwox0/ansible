@@ -12,9 +12,6 @@
         force_apt_get: true
         update_cache: true
         state: present
-      tags:
-        - install
-        - core
   tasks:
     ########
     # Core #
@@ -29,6 +26,8 @@
               - unzip
               - fzf
           tags:
+            - nogui
+            - gui
             - dotfiles
             - neovim
             - tmux
@@ -40,6 +39,7 @@
           ansible.builtin.apt:
             name: ["checkinstall"]
           tags:
+            - nogui
             - neovim
 
         # - name: Install Doas
@@ -55,12 +55,16 @@
             name:
               - pkg-config
               - libssl-dev
+          tags:
+            - nogui
+            - openssl
 
     #############
     # Languages #
     - name: Rust
       tags:
         - rust
+        - nogui
         - terminal
       block:
         - name: Rust Environment
@@ -74,20 +78,24 @@
       ansible.builtin.import_tasks: tasks/node.yml
       tags:
         - node
+        - nogui
         - neovim
 
     ###########
     # Configs #
     - name: Git Config
       ansible.builtin.import_tasks: tasks/git.yml
-      tags: git
+      tags:
+        - git
+        - nogui
 
     - name: Dotfiles
       ansible.builtin.import_tasks: tasks/dotfiles.yml
       tags:
         - dotfiles
+        - nogui
+        - gui
         - neovim
-        - bash
         - terminal
         - tmux
         - awesome
@@ -98,27 +106,38 @@
       ansible.builtin.import_tasks: tasks/rust-tools.yml
       tags:
         - rust
+        - nogui
         - terminal
 
     - name: Neovim
       ansible.builtin.import_tasks: tasks/neovim.yml
-      tags: neovim
+      tags:
+        - neovim
+        - nogui
 
     - name: Terminal
       ansible.builtin.import_tasks: tasks/terminal.yml
-      tags: terminal
+      tags:
+        - terminal
+        - nogui
 
     - name: Tmux
       ansible.builtin.import_tasks: tasks/tmux.yml
-      tags: tmux
+      tags:
+        - tmux
+        - nogui
 
     - name: AwesomeWM
       ansible.builtin.import_tasks: tasks/awesome.yml
-      tags: awesome
+      tags:
+        - awesome
+        - gui
 
     - name: Qemu
       ansible.builtin.import_tasks: tasks/qemu.yml
-      tags: qemu
+      tags:
+        - qemu
+        - gui
 
     # - name: Brave
     #   ansible.builtin.import_tasks: tasks/brave.yml
