@@ -6,3 +6,6 @@
 
 - name: Install mprocs
   ansible.builtin.command: cargo install mprocs
+
+- name: Install ripgrep
+  ansible.builtin.command: cargo install ripgrep

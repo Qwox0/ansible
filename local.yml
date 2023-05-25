@@ -66,6 +66,7 @@
         - rust
         - nogui
         - terminal
+        - neovim
       block:
         - name: Rust Environment
           ansible.builtin.import_tasks: tasks/rust-env.yml

@@ -5,11 +5,6 @@
     name: neovim
     state: build-dep
 
-- name: Installing Packer
-  ansible.builtin.git:
-    repo: "https://github.com/wbthomason/packer.nvim"
-    dest: "{{ home }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
-
 - name: Cloning Neovim
   ansible.builtin.git:
     repo: "https://github.com/neovim/neovim"
@@ -38,6 +33,11 @@
       ansible.builtin.command: "checkinstall --default --pakdir={{ bin }}/neovim/build"
       args:
         chdir: "{{ bin }}/neovim"
+
+- name: Installing Packer
+  ansible.builtin.git:
+    repo: "https://github.com/wbthomason/packer.nvim"
+    dest: "{{ home }}/.local/share/nvim/site/pack/packer/start/packer.nvim"
 
 
 # - name: Build neovim
